@@ -1,0 +1,409 @@
+SE Project final code working
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Criminal structure
+struct Criminal {
+    string name;
+    int age;
+    string address;
+};
+
+struct FIR {
+    string caseNumber;
+    string description;
+    string status;
+};
+
+const int MAX_CRIMINALS = 100;
+const int MAX_FIRS = 100;
+Criminal criminals[MAX_CRIMINALS];
+FIR firRecords[MAX_FIRS];
+int numCriminals = 0;
+int numFIRs = 0;
+
+void adminLogin();
+void displayMenu();
+void criminalMenu();
+void firMenu();
+void reportsMenu();
+void addCriminalData();
+void updateCriminalData();
+void deleteCriminalData();
+void issueFIR();
+void updateFIR();
+void changeFIRStatus();
+void searchCriminalData();
+void firReport();
+void criminalReport();
+
+int main() {
+    adminLogin();
+    return 0;
+}
+
+void adminLogin() {
+    string username, password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+
+    if (username == "admin" && password == "admin123") {
+        displayMenu();
+    } else {
+        cout << "Invalid credentials. Exiting...\n";
+    }
+}
+
+void displayMenu() {
+    int choice;
+    do {
+        cout << "\nAdmin Menu\n";
+        cout << "1. Criminal Record\n";
+        cout << "2. FIR\n";
+        cout << "3. Reports\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                criminalMenu();
+                break;
+            case 2:
+                firMenu();
+                break;
+            case 3:
+                reportsMenu();  // Added call to reportsMenu here
+                break;
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 0);
+}
+
+void criminalMenu() {
+    int choice;
+    do {
+        cout << "\nCriminal Record Menu\n";
+        cout << "1. Add Criminal Data\n";
+        cout << "2. Update Criminal Data\n";
+        cout << "3. Delete Criminal Data\n";
+        cout << "4. Search Criminal Data\n";
+        cout << "0. Back to Admin Menu\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addCriminalData();
+                break;
+            case 2:
+                updateCriminalData();
+                break;
+            case 3:
+                deleteCriminalData();
+                break;
+            case 4:
+                searchCriminalData();
+                break;
+            case 0:
+                cout << "Returning to Admin Menu...\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 0);
+}
+
+void firMenu() {
+    int choice;
+    do {
+        cout << "\nFIR Menu\n";
+        cout << "1. Issue FIR against Criminal\n";
+        cout << "2. Update FIR\n";
+        cout << "3. Change FIR Status\n";
+        cout << "4. FIR Report\n";
+        cout << "0. Back to Admin Menu\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                issueFIR();
+                break;
+            case 2:
+                updateFIR();
+                break;
+            case 3:
+                changeFIRStatus();
+                break;
+            case 4:
+                firReport();
+                break;
+            case 0:
+                cout << "Returning to Admin Menu...\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 0);
+}
+
+void reportsMenu() {
+    int choice;
+    do {
+        cout << "\nReports Menu\n";
+        cout << "1. FIR Report\n";
+        cout << "2. Criminal Report\n";
+        cout << "0. Back to Admin Menu\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                firReport();
+                break;
+            case 2:
+                criminalReport();
+                break;
+            case 0:
+                cout << "Returning to Admin Menu...\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 0);
+}
+
+void addCriminalData() {
+    if (numCriminals < MAX_CRIMINALS) {
+        cout << "\nEnter Criminal Details:\n";
+        cout << "Name: ";
+        cin.ignore();
+        getline(cin, criminals[numCriminals].name);
+        cout << "Age: ";
+        cin >> criminals[numCriminals].age;
+        cout << "Address: ";
+        cin.ignore();
+        getline(cin, criminals[numCriminals].address);
+
+        numCriminals++;
+        cout << "Criminal data added successfully.\n";
+    } else {
+        cout << "Maximum limit reached. Cannot add more criminals.\n";
+    }
+}
+
+void updateCriminalData() {
+    if (numCriminals > 0) {
+        string searchName;
+        cout << "\nEnter the name of the criminal to update: ";
+        cin.ignore();
+        getline(cin, searchName);
+
+        int index = -1;
+        for (int i = 0; i < numCriminals; ++i) {
+            if (criminals[i].name == searchName) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            cout << "\nEnter new details for criminal:\n";
+            cout << "Name: ";
+            getline(cin, criminals[index].name);
+            cout << "Age: ";
+            cin >> criminals[index].age;
+            cout << "Address: ";
+            cin.ignore();
+            getline(cin, criminals[index].address);
+
+            cout << "Criminal data updated successfully.\n";
+        } else {
+            cout << "Criminal not found.\n";
+        }
+    } else {
+        cout << "No criminals available to update.\n";
+    }
+}
+
+void deleteCriminalData() {
+    if (numCriminals > 0) {
+        string searchName;
+        cout << "\nEnter the name of the criminal to delete: ";
+        cin.ignore();
+        getline(cin, searchName);
+
+        int index = -1;
+        for (int i = 0; i < numCriminals; ++i) {
+            if (criminals[i].name == searchName) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            for (int i = index; i < numCriminals - 1; ++i) {
+                criminals[i] = criminals[i + 1];
+            }
+            numCriminals--;
+            cout << "Criminal data deleted successfully.\n";
+        } else {
+            cout << "Criminal not found.\n";
+        }
+    } else {
+        cout << "No criminals available to delete.\n";
+    }
+}
+
+void issueFIR() {
+    if (numCriminals > 0 && numFIRs < MAX_FIRS) {
+        string searchName;
+        cout << "\nEnter the name of the criminal to issue FIR: ";
+        cin.ignore();
+        getline(cin, searchName);
+
+        int index = -1;
+        for (int i = 0; i < numCriminals; ++i) {
+            if (criminals[i].name == searchName) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            cout << "\nEnter FIR Details:\n";
+            cout << "Case Number: ";
+            getline(cin, firRecords[numFIRs].caseNumber);
+            cout << "Description: ";
+            getline(cin, firRecords[numFIRs].description);
+            firRecords[numFIRs].status = "Pending";
+            numFIRs++;
+            cout << "FIR issued successfully.\n";
+        } else {
+            cout << "Criminal not found.\n";
+        }
+    } else {
+        cout << "No criminals available or FIR limit reached.\n";
+    }
+}
+
+void firReport() {
+    if (numFIRs > 0) {
+        cout << "\nFIR Report:\n";
+        for (int i = 0; i < numFIRs; ++i) {
+            cout << "Case Number: " << firRecords[i].caseNumber << endl;
+            cout << "Description: " << firRecords[i].description << endl;
+            cout << "Status: " << firRecords[i].status << endl;
+        }
+    } else {
+        cout << "No FIRs available for the report.\n";
+    }
+}
+
+void criminalReport() {
+    if (numCriminals > 0) {
+        cout << "\nCriminal Report:\n";
+        for (int i = 0; i < numCriminals; ++i) {
+            cout << "Name: " << criminals[i].name << endl;
+            cout << "Age: " << criminals[i].age << endl;
+            cout << "Address: " << criminals[i].address << endl;
+        }
+    } else {
+        cout << "No criminals available for the report.\n";
+    }
+}
+
+void updateFIR() {
+    if (numFIRs > 0) {
+        string searchCase;
+        cout << "\nEnter the case number to update: ";
+        cin.ignore();
+        getline(cin, searchCase);
+
+        int index = -1;
+        for (int i = 0; i < numFIRs; ++i) {
+            if (firRecords[i].caseNumber == searchCase) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            cout << "\nEnter new details for the FIR:\n";
+            cout << "Description: ";
+            getline(cin, firRecords[index].description);
+            cout << "Status: ";
+            getline(cin, firRecords[index].status);
+
+            cout << "FIR updated successfully.\n";
+        } else {
+            cout << "FIR not found.\n";
+        }
+    } else {
+        cout << "No FIRs available to update.\n";
+    }
+}
+
+void changeFIRStatus() {
+    if (numFIRs > 0) {
+        string searchCase;
+        cout << "\nEnter the case number to change status: ";
+        cin.ignore();
+        getline(cin, searchCase);
+
+        int index = -1;
+        for (int i = 0; i < numFIRs; ++i) {
+            if (firRecords[i].caseNumber == searchCase) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            cout << "Enter new status (e.g., Pending, Resolved): ";
+            getline(cin, firRecords[index].status);
+            cout << "FIR status updated successfully.\n";
+        } else {
+            cout << "FIR not found.\n";
+        }
+    } else {
+        cout << "No FIRs available to update status.\n";
+    }
+}
+
+void searchCriminalData() {
+    if (numCriminals > 0) {
+        string searchName;
+        cout << "\nEnter the name of the criminal to search: ";
+        cin.ignore();
+        getline(cin, searchName);
+
+        int index = -1;
+        for (int i = 0; i < numCriminals; ++i) {
+            if (criminals[i].name == searchName) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            cout << "Name: " << criminals[index].name << endl;
+            cout << "Age: " << criminals[index].age << endl;
+            cout << "Address: " << criminals[index].address << endl;
+        } else {
+            cout << "Criminal not found.\n";
+        }
+    } else {
+        cout << "No criminals available to search.\n";
+    }
+}
